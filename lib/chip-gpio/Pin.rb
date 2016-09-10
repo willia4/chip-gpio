@@ -67,47 +67,28 @@ module ChipGPIO
 
   end
 
-  def self.chip_version
-    default_version = :v4_4
-
-    begin
-      version_string = File.read('/proc/version')
-
-      #grab the major and minor version of the Linux string; only match on NTC versions
-      #since custom builds will be weird
-      match = /Linux version ([0-9]+)\.([0-9]+).+-ntc.*/.match(version_string)
-      throw "Unable to parse /proc/version string" if match.nil? 
-      throw "Unable to parse /proc/version string - could not find version numbers" if match.captures.size != 2
-
-      major = match.captures[0]
-      minor = match.captures[1]
-
-      if major == "4" && minor == "3" 
-        return :v4_3
-      elsif  major== "4" && minor == "4"
-        return :v4_4
-      else
-        throw "Unrecognized version #{major}.#{minor}"
+  def self.get_xio_base
+    labels = Dir::glob("/sys/class/gpio/*/label")
+    labels.each do |label|
+      value = File.read(label).strip
+      if value == "pcf8574a"
+        base_path = File.dirname(label)
+        base_path = File.join(base_path, 'base')
+        base = File.read(base_path).strip
+        return base.to_i
       end
-    rescue
-      puts "Unable to read version from /proc/version; using #{default_version} as default"
-      version = default_version
     end
 
-    return version
+    throw "Could not find XIO base"
   end
 
   def self.get_pins
-      v = chip_version
       cis = [132, 133, 134, 135, 136, 137, 138, 139 ]
+      xio = []
 
-      case chip_version
-      when :v4_3
-        xio = [408, 409, 410, 411, 412, 413, 414, 415]
-      when :v4_4
-        xio = [1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023]
-      end
-
+      xio_base = get_xio_base()
+      (0..7).each { |i| xio << (xio_base + i) }
+      
       pins = {}
 
       cis.each_with_index { |gpio, index| pins["CSI#{index}".to_sym] = Pin::Pin.new(gpio) }
