@@ -1,11 +1,11 @@
 
 Gem::Specification.new do |s|
   s.name        = 'chip-gpio'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2016-09-10'
   s.homepage    = 'http://github.com/willia4/chip-gpio'
-  s.summary     = "A ruby gem to control the GPIO pens on the CHIP computer"
-  s.description = "A ruby gem to control the GPIO pens on the CHIP computer"
+  s.summary     = "A ruby gem to control the IO hardware on the CHIP computer"
+  s.description = "A ruby gem to control the IO hardware the CHIP computer"
   s.authors     = ['James Williams']
   s.email       = 'james@jameswilliams.me'
   s.license     = 'MIT'
