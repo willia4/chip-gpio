@@ -27,8 +27,9 @@ module ChipGPIO
     attr_reader :polarity
     attr_reader :phase
     attr_reader :word_size
+    attr_reader :lsb_first
 
-    def initialize(clock_pin: nil, input_pin: nil, output_pin: nil, polarity: 1, phase: 0, word_size: 8)
+    def initialize(clock_pin: nil, input_pin: nil, output_pin: nil, polarity: 1, phase: 0, word_size: 8, lsb_first: false)
       raise ArgumentError, "clock_pin is required" if clock_pin == nil
       raise ArgumentError, "At least input_pin or output_pin must be specified" if ((input_pin == nil) && (output_pin == nil))
 
@@ -60,21 +61,21 @@ module ChipGPIO
       @polarity = polarity
       @phase = phase
       @word_size = word_size
+      @lsb_first = lsb_first
     end
 
     def max_word
       ((2**@word_size) - 1)
     end
 
-    def write(words: [], reverse_output: true)
+    def write(words: [])
       raise "An output_pin must be specified to write" if !@output_pin
 
+      #you can't make reverse ranges so this logic is gross
+      #the key point is that 0 is the MSB so we only want it first if 
+      #@lsb_first is set
       bits = Array (0..(@word_size - 1))
-
-      if reverse_output
-        words = words.reverse() 
-        bits = bits.reverse() 
-      end
+      bits = bits.reverse() if !@lsb_first 
       
       words.each do |w|
         w = 0 if w < 0
