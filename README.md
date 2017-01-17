@@ -1,8 +1,11 @@
 # chip-gpio
 
-A ruby gem for controlling the GPIO pins on a $9 CHIP computer. 
+A ruby gem for controlling the IO hardware on a $9 CHIP computer. 
 
-Can currently set output values and read input values for CHIP computers running v4.3 or v4.4 images. 
+Can currently set output values and read input values from GPIO pins on CHIP computers running v4.3 or v4.4 images. 
+
+Supports a software SPI mode using the GPIO pins. This support is incomplete. See the TODO 
+in `SoftSpi.rb`. 
 
 ## Installation
 
