@@ -19,7 +19,7 @@
 # ***   Phase 
 
 module ChipGPIO
-  class SoftSPI
+  class SoftwareSPI
     attr_reader :clock_pin
     attr_reader :input_pin
     attr_reader :output_pin
